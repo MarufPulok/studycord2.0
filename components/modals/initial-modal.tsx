@@ -24,6 +24,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FileUpload from "../file-upload";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -36,6 +38,7 @@ const formSchema = z.object({
 
 export default function InitialModal() {
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter()
 
   useEffect(() => {
     setIsMounted(true);
@@ -52,7 +55,14 @@ export default function InitialModal() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      await axios.post("/api/servers", values);
+      form.reset();
+      router.refresh()
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   if (!isMounted) return null;
@@ -62,7 +72,7 @@ export default function InitialModal() {
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Customize your server
+            Initiate your server
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
             Give your server a personality with a name and an image. You can
