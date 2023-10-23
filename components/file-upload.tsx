@@ -25,7 +25,7 @@ export default function FileUpload({
         <Image fill src={value} alt="Server Image" className="rounded-full" />
         <button
         onClick={() => onChange("")}
-        className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm"
+        className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm object-cover"
         type="button"
         >
             <X className="h-4 w-4" />
