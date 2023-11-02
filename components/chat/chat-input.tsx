@@ -5,11 +5,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
-import { Plus, Smile } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "../ui/input";
-import qs from "query-string"
+import qs from "query-string";
 import axios from "axios";
 import { useModal } from "@/hooks/use-modal-store";
+import EmojiPicker from "../emoji-picker";
+import { useRouter } from "next/navigation";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -28,7 +30,8 @@ export default function ChatInput({
   name,
   type,
 }: ChatInputProps) {
-  const {onOpen} = useModal()
+  const router = useRouter()
+  const { onOpen } = useModal();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,14 +43,17 @@ export default function ChatInput({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-        const url = qs.stringifyUrl({
-            url: apiUrl,
-            query
-        })
+      const url = qs.stringifyUrl({
+        url: apiUrl,
+        query,
+      });
 
-        await axios.post(url, values)
+      await axios.post(url, values);
+
+      form.reset()
+      router.refresh()
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   };
 
@@ -62,7 +68,7 @@ export default function ChatInput({
               <FormControl>
                 <div className="relative p-4 pb-6">
                   <button
-                    onClick={() => onOpen("messageFile", {apiUrl, query})}
+                    onClick={() => onOpen("messageFile", { apiUrl, query })}
                     type="button"
                     className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hpver:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
                   >
@@ -77,7 +83,11 @@ export default function ChatInput({
                     {...field}
                   />
                   <div className="absolute right-8 top-7">
-                    <Smile />
+                    <EmojiPicker
+                      onChange={(emoji: string) =>
+                        field.onChange(`${field.value} ${emoji}`)
+                      }
+                    />
                   </div>
                 </div>
               </FormControl>
