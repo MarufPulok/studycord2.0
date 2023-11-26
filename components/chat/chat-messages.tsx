@@ -3,6 +3,7 @@
 import { Member } from '@prisma/client'
 import React from 'react'
 import ChatWelcome from './chat-welcome'
+import { useChatQuery } from '@/hooks/use-chat-query'
 
 interface ChatMessagesProps {
     name: string
@@ -17,6 +18,7 @@ interface ChatMessagesProps {
 }
 
 export default function ChatMessages({ name, member, chatId, apiUrl, socketUrl, socketQuery, paramKey, paramValue, type }: ChatMessagesProps) {
+  const {} = useChatQuery()
   return (
     <div className='flex-1 flex flex-col py-4 overflow-y-auto'>
       <div className="flex-1"/>
